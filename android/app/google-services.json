@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "860316168979",
+    "project_id": "chating-and-data-sharing-app",
+    "storage_bucket": "chating-and-data-sharing-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:860316168979:android:2d1f3a63b7ceabcd3460e6",
+        "android_client_info": {
+          "package_name": "com.example.tester2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "860316168979-uj79slpvv13h6bl6d6h85ltt1sh08d30.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.tester2",
+            "certificate_hash": "590acd68fd7fa65a10bc4c6c4a7f58131e5640ed"
+          }
+        },
+        {
+          "client_id": "860316168979-i4io98o0mi24spos3ggsmss4q2b5hajp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCx2bTV-AzcVPRp1RXdwFCzjTwSDeNV_So"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "860316168979-i4io98o0mi24spos3ggsmss4q2b5hajp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
