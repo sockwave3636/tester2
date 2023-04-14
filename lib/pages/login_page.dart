@@ -1,10 +1,16 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:tester2/pages/homep_page.dart';
 import 'package:tester2/pages/register.dart';
 import 'package:tester2/widgets/wid.dart';
 import 'package:velocity_x/velocity_x.dart';
+
+import '../helper/helper_function.dart';
+import '../service/auth_service.dart';
+import '../service/database_service.dart';
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
@@ -17,6 +23,8 @@ class _LoginPageState extends State<LoginPage> {
   String email ="";
   String password="";
   bool changeButton = false;
+  bool _isLoading = false;
+  AuthService authService = AuthService();
   final formKey = GlobalKey<FormState>();
   // Movetohome(BuildContext context)async{
   //   if(formKey.currentState!.validate()) {
@@ -34,7 +42,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
+      body: _isLoading?Center(child: CircularProgressIndicator(color: Theme.of(context).primaryColor,),):SingleChildScrollView(
         child: SafeArea(
            child: Container(
              padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 60),
@@ -49,11 +57,11 @@ class _LoginPageState extends State<LoginPage> {
                       "Login now to know what is being cooked!".text.size(18).fontWeight(FontWeight.w400).make(),
                       SizedBox(height: 10,),
                       Image.asset(
-                        "assets/images/loderwe.png",
+                        "assets/images/aweqr.jpg",
                         fit: BoxFit.cover,
                       ),
                       Text(
-                        "Welcome $name",
+                        "Welcome",
                         style:  const TextStyle(
                           fontSize: 30,
                           fontWeight: FontWeight.bold,
@@ -79,10 +87,8 @@ class _LoginPageState extends State<LoginPage> {
                                    return RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value!)?null:"enter the valid email";
                                   },
                               onChanged: (value) {
-                                name = value;
                                 setState(() {
                                   email=value;
-                                  print(email);
                                 });
                               },
 
@@ -107,7 +113,6 @@ class _LoginPageState extends State<LoginPage> {
                               onChanged: (value) {
                                 setState(() {
                                   password=value;
-                                  print(password);
                                 });
                               },
                             ),
@@ -120,7 +125,7 @@ class _LoginPageState extends State<LoginPage> {
                                 child: InkWell(
                                   // splashColor: Colors.red,
                                   //   onTap: ()=> Movetohome(context),
-                                  onTap: (){},
+                                  onTap: (){login();},
                                     child: AnimatedContainer(
                                       duration: const Duration(seconds: 1),
                                       width: changeButton ? 60 : 150,
@@ -162,5 +167,31 @@ class _LoginPageState extends State<LoginPage> {
       )
       )
     );
+  }
+  login()async {
+    if (formKey.currentState!.validate()) {
+      setState(() {
+        _isLoading = true;
+      });
+      await authService
+          .loginWithUserNameandPassword(email, password)
+          .then((value) async {
+        if (value == true) {
+          QuerySnapshot snapshot =
+          await DatabaseService(uid: FirebaseAuth.instance.currentUser!.uid)
+              .gettingUserData(email);
+          // saving the values to our shared preferences
+          await HelperFunctions.saveUserLoggedInStatus(true);
+          await HelperFunctions.saveUserEmailSF(email);
+          await HelperFunctions.saveUserNameSF(snapshot.docs[0]['fullName']);
+          nextScreenReplace(context, const HomePage());
+        } else {
+          showSnackbar(context, Colors.blueAccent, value);
+          setState(() {
+            _isLoading = false;
+          });
+        }
+      });
+    }
   }
 }
